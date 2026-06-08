@@ -1,80 +1,42 @@
 ﻿@model IEnumerable<EventHub1.Models.Event>
 
-@using Microsoft.AspNetCore.Identity
-@inject UserManager<IdentityUser> UserManager
+<div class="container mt-4">
 
-@{
-    ViewData["Title"] = "Events";
-    var userId = UserManager.GetUserId(User);
-}
+    <h2 class="mb-3">Events entdecken</h2>
 
-<h1>Events</h1>
-
-<p>
-    <a asp-action="Create" class="btn btn-success">
-        Create New Event
+    <a class="btn btn-primary mb-3" asp-action="Create">
+        + Event erstellen
     </a>
-</p>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Titel</th>
-            <th>Beschreibung</th>
-            <th>Datum</th>
-            <th>Ort</th>
-            <th>Max Teilnehmer</th>
-            <th>Kategorie</th>
-            <th>Aktionen</th>
-        </tr>
-    </thead>
+    <div class="row g-4">
 
-    
-    <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+            <div class="col-md-4">
 
-                <td>@item.Title</td>
+                <div class="card">
 
-                <td>@item.Description</td>
+                    <img src="@(item.ImageUrl ?? "https://images.unsplash.com/photo-1521737604893")" />
 
-                <td>@item.Date</td>
+                    <div class="card-body">
 
-                <td>@item.Location</td>
+                        <h5>@item.Title</h5>
+                        <p class="text-muted">@item.Location</p>
+                        <p>@item.Date.ToString("dd.MM.yyyy")</p>
 
-                <td>@item.MaxParticipants</td>
-
-                <td>@item.Category</td>
-
-                <td>
-
-                    <a asp-action="Details"
-                   asp-route-id="@item.Id"
-                   class="btn btn-info btn-sm">
-                        Details
-                    </a>
-
-                    @if (item.OwnerId == userId)
-                    {
-                        <a asp-action="Edit"
-                   asp-route-id="@item.Id"
-                   class="btn btn-primary btn-sm">
-                            Edit
+                        <a class="btn btn-primary btn-sm"
+                           asp-action="Details"
+                           asp-route-id="@item.Id">
+                            Details
                         </a>
 
-                        <a asp-action="Delete"
-                   asp-route-id="@item.Id"
-                   class="btn btn-danger btn-sm">
-                            Delete
-                        </a>
-                    }
+                    </div>
 
-                </td>
+                </div>
 
-            </tr>
+            </div>
         }
-    </tbody>
-    
 
-</table>
+    </div>
+
+</div>

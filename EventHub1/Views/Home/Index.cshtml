@@ -1,8 +1,85 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- HERO SECTION -->
+<div class="hero text-center text-white">
+
+    <h1 class="fw-bold display-4">EventHub 🎨</h1>
+
+    <p class="lead mt-2">
+        Erlebe kreative Events in deiner Stadt
+    </p>
+
+    <a class="btn btn-light btn-lg mt-3"
+       asp-controller="Events"
+       asp-action="Index">
+        Events entdecken
+    </a>
+
+</div>
+
+<!-- FILTER BAR -->
+<div class="container mt-5 text-center">
+
+    <div class="filter-bar mb-4">
+        🔥 Beliebte Kategorien:
+        <span class="badge bg-danger">Party</span>
+        <span class="badge bg-warning text-dark">Kino</span>
+        <span class="badge bg-success">Grillen</span>
+        <span class="badge bg-primary">Gaming</span>
+    </div>
+
+    <!-- EVENT CARDS -->
+    <div class="row g-4">
+
+        <!-- CARD 1 -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+
+                <img class="card-img-top"
+                     src="https://images.unsplash.com/photo-1521334884684-d80222895322"
+                     alt="LAN Party" />
+
+                <div class="card-body">
+                    <h5 class="card-title">🎮 LAN Party Night</h5>
+                    <p class="card-text text-muted">Gaming & Freunde</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- CARD 2 -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+
+                <img class="card-img-top"
+                     src="https://images.unsplash.com/photo-1523580846011-d3a5bc25702b"
+                     alt="Movie Night" />
+
+                <div class="card-body">
+                    <h5 class="card-title">🎬 Movie Night</h5>
+                    <p class="card-text text-muted">Gemeinsam Filme schauen</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- CARD 3 -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+
+                <img class="card-img-top"
+                     src="https://images.unsplash.com/photo-1551218808-94e220e084d2"
+                     alt="Grill Event" />
+
+                <div class="card-body">
+                    <h5 class="card-title">🍔 Grill Event</h5>
+                    <p class="card-text text-muted">Essen & Freunde</p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
 </div>

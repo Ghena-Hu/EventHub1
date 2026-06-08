@@ -12,6 +12,9 @@ namespace EventHub1.Models
 
         public string UserId { get; set; }
 
+        public string UserName { get; set; }
+
         public int EventId { get; set; }
+       
     }
 }

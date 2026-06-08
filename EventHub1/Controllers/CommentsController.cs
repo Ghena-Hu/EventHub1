@@ -21,20 +21,37 @@ namespace EventHub1.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(int eventId, string text)
         {
-            if (string.IsNullOrWhiteSpace(text))
-                return RedirectToAction("Details", "Events", new { id = eventId });
-
-            var userId = _userManager.GetUserId(User);
+            var user = await _userManager.GetUserAsync(User);
 
             var comment = new Comment
             {
                 Text = text,
                 EventId = eventId,
-                UserId = userId,
+                UserId = user.Id,
+                UserName = user.UserName,
                 CreatedAt = DateTime.Now
             };
 
             _context.Comments.Add(comment);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", "Events", new { id = eventId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id, int eventId)
+        {
+            var comment = await _context.Comments.FindAsync(id);
+
+            if (comment == null)
+                return NotFound();
+
+            var user = await _userManager.GetUserAsync(User);
+
+            if (comment.UserId != user.Id)
+                return Forbid();
+
+            _context.Comments.Remove(comment);
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Details", "Events", new { id = eventId });

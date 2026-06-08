@@ -1,0 +1,61 @@
+﻿@model EventHub1.Models.UserProfileViewModel
+
+@{
+    ViewData["Title"] = "Profil";
+}
+
+<h1>@Model.UserName</h1>
+
+<hr />
+
+<h3>Eigene Events</h3>
+
+@if (Model.Events.Any())
+{
+    foreach (var e in Model.Events)
+    {
+        <div class="card mb-2">
+            <div class="card-body">
+
+                <h5>@e.Title</h5>
+                <p>@e.Description</p>
+
+                <a asp-controller="Events"
+                   asp-action="Details"
+                   asp-route-id="@e.Id"
+                   class="btn btn-sm btn-primary">
+                    Öffnen
+                </a>
+
+            </div>
+        </div>
+    }
+}
+else
+{
+    <p>Keine Events erstellt.</p>
+}
+
+<hr />
+
+<h3>Eigene Kommentare</h3>
+
+@if (Model.Comments.Any())
+{
+    foreach (var c in Model.Comments)
+    {
+        <div class="card mb-2">
+            <div class="card-body">
+
+                <p>@c.Text</p>
+
+                <small>@c.CreatedAt</small>
+
+            </div>
+        </div>
+    }
+}
+else
+{
+    <p>Keine Kommentare geschrieben.</p>
+}

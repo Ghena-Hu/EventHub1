@@ -36,12 +36,13 @@ namespace EventHub1.Controllers
                 return NotFound();
 
             var eventItem = await _context.Events
+                .AsNoTracking()
                 .FirstOrDefaultAsync(e => e.Id == id);
 
             if (eventItem == null)
                 return NotFound();
 
-            // Teilnahmezahlen
+            // Teilnahme-Zähler
             ViewBag.Going = await _context.Participations
                 .CountAsync(p => p.EventId == id && p.Status == "Going");
 
@@ -51,13 +52,11 @@ namespace EventHub1.Controllers
             ViewBag.No = await _context.Participations
                 .CountAsync(p => p.EventId == id && p.Status == "No");
 
-            // 🔥 COMMENTS (WICHTIG)
-            var comments = await _context.Comments
+            // 🔥 COMMENTS (CLEAN)
+            ViewBag.Comments = await _context.Comments
                 .Where(c => c.EventId == id)
                 .OrderByDescending(c => c.CreatedAt)
                 .ToListAsync();
-
-            ViewBag.Comments = comments;
 
             return View(eventItem);
         }
@@ -86,13 +85,18 @@ namespace EventHub1.Controllers
         // GET: Events/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+                return NotFound();
 
             var eventItem = await _context.Events.FindAsync(id);
-            if (eventItem == null) return NotFound();
+
+            if (eventItem == null)
+                return NotFound();
 
             var userId = _userManager.GetUserId(User);
-            if (userId == null) return Challenge();
+
+            if (userId == null)
+                return Challenge();
 
             if (eventItem.OwnerId != userId)
                 return Forbid();
@@ -115,6 +119,9 @@ namespace EventHub1.Controllers
 
             var userId = _userManager.GetUserId(User);
 
+            if (userId == null)
+                return Challenge();
+
             if (eventFromDb.OwnerId != userId)
                 return Forbid();
 
@@ -133,16 +140,20 @@ namespace EventHub1.Controllers
         // GET: Events/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+                return NotFound();
 
             var eventItem = await _context.Events
                 .AsNoTracking()
                 .FirstOrDefaultAsync(e => e.Id == id);
 
-            if (eventItem == null) return NotFound();
+            if (eventItem == null)
+                return NotFound();
 
             var userId = _userManager.GetUserId(User);
-            if (userId == null) return Challenge();
+
+            if (userId == null)
+                return Challenge();
 
             if (eventItem.OwnerId != userId)
                 return Forbid();
@@ -156,10 +167,14 @@ namespace EventHub1.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var eventItem = await _context.Events.FindAsync(id);
-            if (eventItem == null) return NotFound();
+
+            if (eventItem == null)
+                return NotFound();
 
             var userId = _userManager.GetUserId(User);
-            if (userId == null) return Challenge();
+
+            if (userId == null)
+                return Challenge();
 
             if (eventItem.OwnerId != userId)
                 return Forbid();

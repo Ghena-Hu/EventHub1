@@ -20,5 +20,6 @@ namespace EventHub1.Models
         public string OwnerId { get; set; }
 
         public List<Participation> Participations { get; set; }
+        public string ImageUrl { get; set; }
     }
 }

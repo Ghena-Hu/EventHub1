@@ -1,18 +1,133 @@
-html {
-  font-size: 14px;
-}
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
+/* ===================== */
+/* BASE STYLE */
+/* ===================== */
 
 body {
-  margin-bottom: 60px;
+    background: #f6f7fb;
+    font-family: "Segoe UI", sans-serif;
+    color: #1a1a1a;
+}
+
+/* LINKS */
+a {
+    text-decoration: none;
+}
+
+/* ===================== */
+/* NAVBAR */
+/* ===================== */
+
+.app-navbar {
+    background: linear-gradient(90deg, #ff4d6d, #ff8a5b);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+/* ===================== */
+/* LAYOUT CONTAINER */
+/* ===================== */
+
+.app-container {
+    padding: 30px;
+}
+
+/* ===================== */
+/* HERO SECTION */
+/* ===================== */
+
+.hero {
+    background: linear-gradient(135deg, #ff4d6d, #ff8a5b);
+    padding: 80px 20px;
+    border-radius: 0 0 30px 30px;
+    color: white;
+    text-align: center;
+}
+
+.hero-clean {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.hero-title {
+    font-size: 48px;
+    font-weight: 800;
+    background: linear-gradient(90deg, #ff4d6d, #ff8a5b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+    font-size: 18px;
+    color: #666;
+    margin-top: 10px;
+}
+
+.hero-btn {
+    margin-top: 20px;
+    padding: 12px 28px;
+    border-radius: 12px;
+}
+
+/* ===================== */
+/* FILTER BAR */
+/* ===================== */
+
+.filter-bar {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+    .filter-bar .badge {
+        margin: 0 4px;
+        font-size: 14px;
+        padding: 8px 10px;
+        border-radius: 10px;
+    }
+
+/* ===================== */
+/* CARDS */
+/* ===================== */
+
+.card {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    transition: 0.3s;
+    background: white;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card img {
+        height: 180px;
+        width: 100%;
+        object-fit: cover;
+    }
+
+/* ===================== */
+/* BUTTONS */
+/* ===================== */
+
+.btn-primary {
+    background: #ff4d6d;
+    border: none;
+}
+
+    .btn-primary:hover {
+        background: #e63e5a;
+    }
+
+.btn-light {
+    border-radius: 12px;
+}
+
+/* ===================== */
+/* UTILITIES */
+/* ===================== */
+
+.text-muted {
+    color: #888 !important;
 }
