@@ -70,9 +70,7 @@
 <h4>Aktuelle Teilnehmer</h4>
 
 <p>👍 Kommen: <strong>@going</strong></p>
-
 <p>🤔 Vielleicht: <strong>@maybe</strong></p>
-
 <p>❌ Absagen: <strong>@no</strong></p>
 
 @if (going >= Model.MaxParticipants)
@@ -90,19 +88,64 @@ else
 
 <hr />
 
+<!-- KOMMENTAR SYSTEM -->
+
+<h3>Kommentare</h3>
+
+<form asp-controller="Comments"
+      asp-action="Create"
+      method="post">
+
+    <input type="hidden" name="eventId" value="@Model.Id" />
+
+    <textarea name="text"
+              class="form-control"
+              rows="3"
+              placeholder="Schreibe einen Kommentar..."></textarea>
+
+    <br />
+
+    <button type="submit" class="btn btn-primary">
+        Kommentar posten
+    </button>
+
+</form>
+
+<hr />
+
+@if (ViewBag.Comments != null)
+{
+    foreach (var c in ViewBag.Comments)
+    {
+        <div class="card mb-2">
+            <div class="card-body">
+
+                <p>@c.Text</p>
+
+                <small class="text-muted">
+                    @c.CreatedAt
+                </small>
+
+            </div>
+        </div>
+    }
+}
+
+<hr />
+
 <div>
 
     @if (Model.OwnerId == userId)
     {
         <a asp-action="Edit"
-       asp-route-id="@Model.Id"
-       class="btn btn-primary">
+           asp-route-id="@Model.Id"
+           class="btn btn-primary">
             Edit
         </a>
 
         <a asp-action="Delete"
-       asp-route-id="@Model.Id"
-       class="btn btn-danger">
+           asp-route-id="@Model.Id"
+           class="btn btn-danger">
             Delete
         </a>
     }

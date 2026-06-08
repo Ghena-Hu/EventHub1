@@ -13,6 +13,7 @@ namespace EventHub1.Data
 
         public DbSet<Event> Events { get; set; }
         public DbSet<Participation> Participations { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -41,6 +41,7 @@ namespace EventHub1.Controllers
             if (eventItem == null)
                 return NotFound();
 
+            // Teilnahmezahlen
             ViewBag.Going = await _context.Participations
                 .CountAsync(p => p.EventId == id && p.Status == "Going");
 
@@ -49,6 +50,14 @@ namespace EventHub1.Controllers
 
             ViewBag.No = await _context.Participations
                 .CountAsync(p => p.EventId == id && p.Status == "No");
+
+            // 🔥 COMMENTS (WICHTIG)
+            var comments = await _context.Comments
+                .Where(c => c.EventId == id)
+                .OrderByDescending(c => c.CreatedAt)
+                .ToListAsync();
+
+            ViewBag.Comments = comments;
 
             return View(eventItem);
         }
@@ -109,7 +118,6 @@ namespace EventHub1.Controllers
             if (eventFromDb.OwnerId != userId)
                 return Forbid();
 
-            // Update Felder
             eventFromDb.Title = eventItem.Title;
             eventFromDb.Description = eventItem.Description;
             eventFromDb.Date = eventItem.Date;
