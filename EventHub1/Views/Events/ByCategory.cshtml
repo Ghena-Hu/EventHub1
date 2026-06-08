@@ -1,0 +1,46 @@
+﻿@model IEnumerable<EventHub1.Models.Event>
+
+@{
+    ViewData["Title"] = "Kategorie: " + ViewBag.Category;
+}
+
+<h2>🔥 Kategorie: @ViewBag.Category</h2>
+
+<a asp-action="Index" class="btn btn-secondary mb-3">
+    ← Alle Events
+</a>
+
+<div class="row g-4">
+
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4">
+
+            <div class="card">
+
+                <div class="card-body">
+
+                    <h5>@item.Title</h5>
+
+                    <p class="text-muted">
+                        @item.Location
+                    </p>
+
+                    <p>
+                        📅 @item.Date
+                    </p>
+
+                    <a class="btn btn-primary"
+                       asp-action="Details"
+                       asp-route-id="@item.Id">
+                        Details
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div>

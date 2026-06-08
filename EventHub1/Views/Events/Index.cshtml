@@ -4,30 +4,69 @@
 
     <h2 class="mb-3">Events entdecken</h2>
 
-    <a class="btn btn-primary mb-3" asp-action="Create">
+    <a asp-controller="Events"
+       asp-action="Create"
+       class="btn btn-primary mb-3">
         + Event erstellen
     </a>
 
-    <div class="row g-4">
+    <div class="mb-3">
+        <a class="btn btn-outline-dark btn-sm"
+           asp-action="Index">Alle</a>
 
+        <a class="btn btn-outline-primary btn-sm"
+           asp-action="ByCategory"
+           asp-route-category="Party">Party</a>
+
+        <a class="btn btn-outline-success btn-sm"
+           asp-action="ByCategory"
+           asp-route-category="Gaming">Gaming</a>
+
+        <a class="btn btn-outline-warning btn-sm"
+           asp-action="ByCategory"
+           asp-route-category="Kino">Kino</a>
+
+        <a class="btn btn-outline-danger btn-sm"
+           asp-action="ByCategory"
+           asp-route-category="Sport">Sport</a>
+    </div>
         @foreach (var item in Model)
-        {
+        { 
             <div class="col-md-4">
 
-                <div class="card">
+                <div class="card shadow-lg border-0 h-100">
 
-                    <img src="@(item.ImageUrl ?? "https://images.unsplash.com/photo-1521737604893")" />
+                    <div class="position-relative">
+
+                        <img class="card-img-top"
+                             src="@(string.IsNullOrEmpty(item.ImageUrl)
+                                                 ? "https://images.unsplash.com/photo-1521737604893"
+                                                 : item.ImageUrl)"
+                         style="height:220px; object-fit:cover;" />
+
+                        <!-- CATEGORY BADGE -->
+                        <span class="badge bg-dark position-absolute top-0 end-0 m-2">
+                            @item.Category
+                        </span>
+
+                    </div>
 
                     <div class="card-body">
 
-                        <h5>@item.Title</h5>
-                        <p class="text-muted">@item.Location</p>
-                        <p>@item.Date.ToString("dd.MM.yyyy")</p>
+                        <h5 class="fw-bold">@item.Title</h5>
 
-                        <a class="btn btn-primary btn-sm"
+                        <p class="text-muted mb-1">
+                            📍 @item.Location
+                        </p>
+
+                        <p class="text-muted">
+                            📅 @item.Date.ToString("dd.MM.yyyy HH:mm")
+                        </p>                        
+
+                        <a class="btn btn-primary w-100"
                            asp-action="Details"
                            asp-route-id="@item.Id">
-                            Details
+                            Öffnen
                         </a>
 
                     </div>
@@ -36,7 +75,3 @@
 
             </div>
         }
-
-    </div>
-
-</div>

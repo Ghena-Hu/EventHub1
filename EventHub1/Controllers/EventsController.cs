@@ -4,6 +4,8 @@ using EventHub1.Data;
 using EventHub1.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace EventHub1.Controllers
 {
@@ -19,7 +21,7 @@ namespace EventHub1.Controllers
             _userManager = userManager;
         }
 
-        // GET: Events
+        // ===================== INDEX =====================
         public async Task<IActionResult> Index()
         {
             var events = await _context.Events
@@ -29,7 +31,7 @@ namespace EventHub1.Controllers
             return View(events);
         }
 
-        // GET: Events/Details/5
+        // ===================== DETAILS =====================
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -42,17 +44,16 @@ namespace EventHub1.Controllers
             if (eventItem == null)
                 return NotFound();
 
-            // Teilnahme-Zähler
-            ViewBag.Going = await _context.Participations
-                .CountAsync(p => p.EventId == id && p.Status == "Going");
+            // 👤 OWNER NAME FIX
+            var owner = await _userManager.FindByIdAsync(eventItem.OwnerId);
+            ViewBag.OwnerName = owner?.UserName ?? "Unbekannt";
 
-            ViewBag.Maybe = await _context.Participations
-                .CountAsync(p => p.EventId == id && p.Status == "Maybe");
+            // 📊 PARTICIPATION
+            ViewBag.Going = await _context.Participations.CountAsync(p => p.EventId == id && p.Status == "Going");
+            ViewBag.Maybe = await _context.Participations.CountAsync(p => p.EventId == id && p.Status == "Maybe");
+            ViewBag.No = await _context.Participations.CountAsync(p => p.EventId == id && p.Status == "No");
 
-            ViewBag.No = await _context.Participations
-                .CountAsync(p => p.EventId == id && p.Status == "No");
-
-            // 🔥 COMMENTS (CLEAN)
+            // 💬 COMMENTS
             ViewBag.Comments = await _context.Comments
                 .Where(c => c.EventId == id)
                 .OrderByDescending(c => c.CreatedAt)
@@ -61,28 +62,67 @@ namespace EventHub1.Controllers
             return View(eventItem);
         }
 
-        // GET: Events/Create
+        // ===================== CREATE (GET) =====================
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Events/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Event eventItem)
         {
-            var userId = _userManager.GetUserId(User);
+            // Diagnostic logs to help identify why POST may not create an event
+            System.Diagnostics.Debug.WriteLine("CREATE HIT");
+            Console.WriteLine("CREATE HIT");
 
-            eventItem.OwnerId = userId;
+            // Log ModelState validity and any errors
+            Console.WriteLine($"ModelState.IsValid = {ModelState.IsValid}");
+            foreach (var kv in ModelState)
+            {
+                if (kv.Value.Errors.Any())
+                {
+                    Console.WriteLine($"ModelState[{kv.Key}] errors: {string.Join(';', kv.Value.Errors.Select(e => e.ErrorMessage))}");
+                }
+            }
 
-            _context.Add(eventItem);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                // return the view with the model so validation messages are shown
+                return View(eventItem);
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                Console.WriteLine("No authenticated user found during Create POST.");
+                return Challenge();
+            }
+
+            eventItem.OwnerId = user.Id;
+
+            if (string.IsNullOrEmpty(eventItem.ImageUrl))
+            {
+                eventItem.ImageUrl = "https://images.unsplash.com/photo-1521737604893";
+            }
+
+            try
+            {
+                _context.Add(eventItem);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                // Log exception and re-show the view with a ModelState error
+                Console.WriteLine("Exception saving event: " + ex);
+                ModelState.AddModelError(string.Empty, "Beim Speichern des Events ist ein Fehler aufgetreten.");
+                return View(eventItem);
+            }
 
             return RedirectToAction(nameof(Index));
         }
-
-        // GET: Events/Edit/5
+        // ===================== EDIT (GET) =====================
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -104,7 +144,7 @@ namespace EventHub1.Controllers
             return View(eventItem);
         }
 
-        // POST: Events/Edit/5
+        // ===================== EDIT (POST) =====================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Event eventItem)
@@ -131,13 +171,14 @@ namespace EventHub1.Controllers
             eventFromDb.Location = eventItem.Location;
             eventFromDb.MaxParticipants = eventItem.MaxParticipants;
             eventFromDb.Category = eventItem.Category;
+            eventFromDb.ImageUrl = eventItem.ImageUrl;
 
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Events/Delete/5
+        // ===================== DELETE (GET) =====================
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -161,7 +202,7 @@ namespace EventHub1.Controllers
             return View(eventItem);
         }
 
-        // POST: Events/Delete/5
+        // ===================== DELETE (POST) =====================
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -183,6 +224,20 @@ namespace EventHub1.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
+        }
+
+        // ===================== CATEGORY FILTER =====================
+        public async Task<IActionResult> ByCategory(string category)
+        {
+            if (string.IsNullOrEmpty(category))
+                return RedirectToAction(nameof(Index));
+
+            var events = await _context.Events
+                .Where(e => e.Category == category)
+                .AsNoTracking()
+                .ToListAsync();
+
+            return View("Index", events);
         }
     }
 }

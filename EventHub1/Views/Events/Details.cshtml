@@ -7,109 +7,52 @@
     ViewData["Title"] = "Event Details";
 
     var userId = UserManager.GetUserId(User);
-
-    var going = ViewBag.Going ?? 0;
-    var maybe = ViewBag.Maybe ?? 0;
-    var no = ViewBag.No ?? 0;
 }
 
-<!-- ===================== -->
 <!-- HEADER -->
-<!-- ===================== -->
+<div class="text-center mb-4">
 
-<div class="mb-3">
-    <h1 class="fw-semibold">@Model.Title</h1>
+    <h1 class="fw-bold">@Model.Title</h1>
+
     <p class="text-muted">
-        @Model.Location • @Model.Date
+        📍 @Model.Location • 📅 @Model.Date.ToString("dd.MM.yyyy HH:mm")
     </p>
+
+    <p>
+        👤 Erstellt von: <strong>@ViewBag.OwnerName</strong>
+    </p>
+
 </div>
 
-<!-- ===================== -->
-<!-- EVENT INFO -->
-<!-- ===================== -->
+<!-- IMAGE -->
+<div class="text-center mb-4">
 
+    <img src="@(string.IsNullOrEmpty(Model.ImageUrl)
+                         ? "https://images.unsplash.com/photo-1521737604893"
+                         : Model.ImageUrl)"
+         class="img-fluid rounded shadow"
+         style="max-height: 400px; object-fit: cover;" />
+
+</div>
+
+<!-- EVENT INFO -->
 <div class="card p-4 mb-4">
 
     <h4 class="mb-3">Event Informationen</h4>
 
-    <dl class="row">
+    <p>@Model.Description</p>
 
-        <dt class="col-sm-3">Beschreibung</dt>
-        <dd class="col-sm-9">@Model.Description</dd>
+    <hr />
 
-        <dt class="col-sm-3">Datum</dt>
-        <dd class="col-sm-9">@Model.Date</dd>
-
-        <dt class="col-sm-3">Ort</dt>
-        <dd class="col-sm-9">@Model.Location</dd>
-
-        <dt class="col-sm-3">Max. Teilnehmer</dt>
-        <dd class="col-sm-9">@Model.MaxParticipants</dd>
-
-        <dt class="col-sm-3">Kategorie</dt>
-        <dd class="col-sm-9">@Model.Category</dd>
-
-    </dl>
+    <p>📌 Kategorie: <strong>@Model.Category</strong></p>
+    <p>👥 Max Teilnehmer: <strong>@Model.MaxParticipants</strong></p>
 
 </div>
 
-<!-- ===================== -->
-<!-- TEILNAHME -->
-<!-- ===================== -->
+<!-- COMMENTS -->
+<div class="card p-4 mb-4">
 
-<h3>Teilnahme</h3>
-
-<div class="btn-group mb-3">
-
-    <a class="btn btn-success"
-       href="/Participation/Join?eventId=@Model.Id&status=Going">
-        👍 Ich komme
-    </a>
-
-    <a class="btn btn-warning"
-       href="/Participation/Join?eventId=@Model.Id&status=Maybe">
-        🤔 Vielleicht
-    </a>
-
-    <a class="btn btn-danger"
-       href="/Participation/Join?eventId=@Model.Id&status=No">
-        ❌ Absage
-    </a>
-
-</div>
-
-<!-- ===================== -->
-<!-- STATISTIK -->
-<!-- ===================== -->
-
-<div class="mb-4">
-
-    <p>👍 Kommen: <strong>@going</strong></p>
-    <p>🤔 Vielleicht: <strong>@maybe</strong></p>
-    <p>❌ Absagen: <strong>@no</strong></p>
-
-    @if (going >= Model.MaxParticipants)
-    {
-        <div class="alert alert-danger">
-            Event ist voll.
-        </div>
-    }
-    else
-    {
-        <div class="alert alert-success">
-            Event ist offen.
-        </div>
-    }
-
-</div>
-
-<!-- ===================== -->
-<!-- KOMMENTARE -->
-<!-- ===================== -->
-
-<h3>Kommentare</h3>
-
-<div class="card p-3 mb-3">
+    <h4>Kommentare</h4>
 
     <form asp-controller="Comments"
           asp-action="Create"
@@ -118,24 +61,23 @@
         <input type="hidden" name="eventId" value="@Model.Id" />
 
         <textarea name="text"
-                  class="form-control"
+                  class="form-control mb-2"
                   rows="3"
                   placeholder="Schreibe einen Kommentar..."></textarea>
 
-        <button type="submit" class="btn btn-primary mt-2">
+        <button class="btn btn-primary">
             Posten
         </button>
 
     </form>
 
-</div>
+    <hr />
 
-@if (ViewBag.Comments != null)
-{
-    foreach (var c in ViewBag.Comments)
+    @if (ViewBag.Comments != null)
     {
-        <div class="card mb-2">
-            <div class="card-body">
+        foreach (var c in ViewBag.Comments)
+        {
+            <div class="border rounded p-2 mb-2">
 
                 <p class="mb-1">@c.Text</p>
 
@@ -144,17 +86,13 @@
                 </small>
 
             </div>
-        </div>
+        }
     }
-}
 
-<hr />
+</div>
 
-<!-- ===================== -->
 <!-- ACTIONS -->
-<!-- ===================== -->
-
-<div>
+<div class="d-flex gap-2">
 
     @if (Model.OwnerId == userId)
     {
