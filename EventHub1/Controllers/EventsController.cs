@@ -96,26 +96,27 @@ namespace EventHub1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Event eventItem)
         {
-            if (id != eventItem.Id) return NotFound();
+            if (id != eventItem.Id)
+                return NotFound();
 
-            var existingEvent = await _context.Events
-                .AsNoTracking()
-                .FirstOrDefaultAsync(e => e.Id == id);
+            var eventFromDb = await _context.Events.FindAsync(id);
 
-            if (existingEvent == null) return NotFound();
+            if (eventFromDb == null)
+                return NotFound();
 
             var userId = _userManager.GetUserId(User);
-            if (userId == null) return Challenge();
 
-            if (existingEvent.OwnerId != userId)
+            if (eventFromDb.OwnerId != userId)
                 return Forbid();
 
-            eventItem.OwnerId = existingEvent.OwnerId;
+            // Update Felder
+            eventFromDb.Title = eventItem.Title;
+            eventFromDb.Description = eventItem.Description;
+            eventFromDb.Date = eventItem.Date;
+            eventFromDb.Location = eventItem.Location;
+            eventFromDb.MaxParticipants = eventItem.MaxParticipants;
+            eventFromDb.Category = eventItem.Category;
 
-            if (!ModelState.IsValid)
-                return View(eventItem);
-
-            _context.Update(eventItem);
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
