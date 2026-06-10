@@ -23,15 +23,25 @@ namespace EventHub1.Controllers
 
         // ===================== INDEX =====================
         public async Task<IActionResult> Index(string sortOrder)
-{
-    var events = _context.Events.AsQueryable();
+        {
+            var events = _context.Events.AsQueryable();
 
-    if (sortOrder == "old")
-        events = events.OrderBy(e => e.Date);
-    else
-        events = events.OrderByDescending(e => e.Date);
+            // DEFAULT = newest first
+            switch (sortOrder)
+            {
+                case "old":
+                    events = events.OrderBy(e => e.Date)
+                                   .ThenBy(e => e.Id);
+                    break;
 
-    ViewBag.Categories = new List<string>
+                case "new":
+                default:
+                    events = events.OrderByDescending(e => e.Date)
+                                   .ThenByDescending(e => e.Id);
+                    break;
+            }
+
+            ViewBag.Categories = new List<string>
     {
         "Party",
         "Gaming",
@@ -43,8 +53,9 @@ namespace EventHub1.Controllers
         "Food"
     };
 
-    return View(await events.ToListAsync());
-}
+            return View(await events.ToListAsync());
+        }
+
 
         // ===================== DETAILS =====================
         public async Task<IActionResult> Details(int? id)
