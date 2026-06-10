@@ -52,30 +52,33 @@
                     <!-- RECHTS -->
                     <ul class="navbar-nav ms-auto">
 
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">
-                                Login
-                            </a>
-                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <form asp-area="Identity"
+                                      asp-page="/Account/Logout"
+                                      method="post"
+                                      class="d-inline">
+                                    <button type="submit" class="btn btn-link nav-link">
+                                        Logout
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">
+                                    Login
+                                </a>
+                            </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">
-                                Registrieren
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <form asp-area="Identity"
-                                  asp-page="/Account/Logout"
-                                  method="post"
-                                  class="d-inline">
-
-                                <button type="submit" class="btn nav-link">
-                                    Logout
-                                </button>
-
-                            </form>
-                        </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">
+                                    Registrieren
+                                </a>
+                            </li>
+                        }
 
                     </ul>
 
