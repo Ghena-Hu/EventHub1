@@ -46,6 +46,51 @@
 
     <p>📌 Kategorie: <strong>@Model.Category</strong></p>
     <p>👥 Max Teilnehmer: <strong>@Model.MaxParticipants</strong></p>
+    <hr />
+
+    <h4>Teilnahme</h4>
+
+    <div class="btn-group mb-3">
+
+        <a class="btn btn-success"
+           href="/Participation/Join?eventId=@Model.Id&status=Going">
+            👍 Ich komme
+        </a>
+
+        <a class="btn btn-warning"
+           href="/Participation/Join?eventId=@Model.Id&status=Maybe">
+            🤔 Vielleicht
+        </a>
+
+        <a class="btn btn-danger"
+           href="/Participation/Join?eventId=@Model.Id&status=No">
+            ❌ Absage
+        </a>
+
+    </div>
+
+    <div class="mb-3">
+
+        <p>👍 Kommen: <strong>@ViewBag.Going</strong></p>
+
+        <p>🤔 Vielleicht: <strong>@ViewBag.Maybe</strong></p>
+
+        <p>❌ Absagen: <strong>@ViewBag.No</strong></p>
+
+        @if (ViewBag.IsFull == true)
+        {
+            <div class="alert alert-danger">
+                🚫 Event ist voll.
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-success">
+                ✅ Event ist offen.
+            </div>
+        }
+
+    </div>
 
 </div>
 

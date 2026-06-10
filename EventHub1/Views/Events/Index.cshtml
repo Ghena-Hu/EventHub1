@@ -10,28 +10,83 @@
         + Event erstellen
     </a>
 
+
+    <!-- SORTIERUNG -->
     <div class="mb-3">
+        <a class="btn btn-outline-primary"
+           href="/Events/Index">
+            Neueste zuerst
+        </a>
+
+        <a class="btn btn-outline-secondary"
+           href="/Events/Index?sortOrder=old">
+            Älteste zuerst
+        </a>
+    </div>
+
+    <!-- KATEGORIEN -->
+    <div class="mb-4">
+
         <a class="btn btn-outline-dark btn-sm"
-           asp-action="Index">Alle</a>
+           asp-action="Index">
+            Alle
+        </a>
 
         <a class="btn btn-outline-primary btn-sm"
            asp-action="ByCategory"
-           asp-route-category="Party">Party</a>
+           asp-route-category="Party">
+            Party
+        </a>
 
         <a class="btn btn-outline-success btn-sm"
            asp-action="ByCategory"
-           asp-route-category="Gaming">Gaming</a>
+           asp-route-category="Gaming">
+            Gaming
+        </a>
 
         <a class="btn btn-outline-warning btn-sm"
            asp-action="ByCategory"
-           asp-route-category="Kino">Kino</a>
+           asp-route-category="Kino">
+            Kino
+        </a>
 
         <a class="btn btn-outline-danger btn-sm"
            asp-action="ByCategory"
-           asp-route-category="Sport">Sport</a>
+           asp-route-category="Sport">
+            Sport
+        </a>
+
+        <a class="btn btn-outline-info btn-sm"
+           asp-action="ByCategory"
+           asp-route-category="Musik">
+            Musik
+        </a>
+
+        <a class="btn btn-lern btn-sm"
+           asp-action="ByCategory"
+           asp-route-category="Lernen">
+            Lernen
+        </a>
+
+        <a class="btn btn-outline-dark btn-sm"
+           asp-action="ByCategory"
+           asp-route-category="Reisen">
+            Reisen
+        </a>
+
+        <a class="btn btn-outline-danger btn-sm"
+           asp-action="ByCategory"
+           asp-route-category="Food">
+            Food
+        </a>
+
     </div>
+
+    <!-- EVENTS -->
+    <div class="row g-4">
+
         @foreach (var item in Model)
-        { 
+        {
             <div class="col-md-4">
 
                 <div class="card shadow-lg border-0 h-100">
@@ -40,11 +95,10 @@
 
                         <img class="card-img-top"
                              src="@(string.IsNullOrEmpty(item.ImageUrl)
-                                                 ? "https://images.unsplash.com/photo-1521737604893"
-                                                 : item.ImageUrl)"
+                                                             ? "https://images.unsplash.com/photo-1521737604893"
+                                                             : item.ImageUrl)"
                          style="height:220px; object-fit:cover;" />
 
-                        <!-- CATEGORY BADGE -->
                         <span class="badge bg-dark position-absolute top-0 end-0 m-2">
                             @item.Category
                         </span>
@@ -53,7 +107,9 @@
 
                     <div class="card-body">
 
-                        <h5 class="fw-bold">@item.Title</h5>
+                        <h5 class="fw-bold">
+                            @item.Title
+                        </h5>
 
                         <p class="text-muted mb-1">
                             📍 @item.Location
@@ -61,7 +117,7 @@
 
                         <p class="text-muted">
                             📅 @item.Date.ToString("dd.MM.yyyy HH:mm")
-                        </p>                        
+                        </p>
 
                         <a class="btn btn-primary w-100"
                            asp-action="Details"
@@ -74,4 +130,8 @@
                 </div>
 
             </div>
-        }
+                }
+
+    </div>
+
+</div>

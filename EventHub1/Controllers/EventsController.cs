@@ -22,14 +22,29 @@ namespace EventHub1.Controllers
         }
 
         // ===================== INDEX =====================
-        public async Task<IActionResult> Index()
-        {
-            var events = await _context.Events
-                .AsNoTracking()
-                .ToListAsync();
+        public async Task<IActionResult> Index(string sortOrder)
+{
+    var events = _context.Events.AsQueryable();
 
-            return View(events);
-        }
+    if (sortOrder == "old")
+        events = events.OrderBy(e => e.Date);
+    else
+        events = events.OrderByDescending(e => e.Date);
+
+    ViewBag.Categories = new List<string>
+    {
+        "Party",
+        "Gaming",
+        "Kino",
+        "Sport",
+        "Musik",
+        "Lernen",
+        "Reisen",
+        "Food"
+    };
+
+    return View(await events.ToListAsync());
+}
 
         // ===================== DETAILS =====================
         public async Task<IActionResult> Details(int? id)
@@ -44,14 +59,25 @@ namespace EventHub1.Controllers
             if (eventItem == null)
                 return NotFound();
 
-            // 👤 OWNER NAME FIX
+            // 👤 OWNER NAME
             var owner = await _userManager.FindByIdAsync(eventItem.OwnerId);
             ViewBag.OwnerName = owner?.UserName ?? "Unbekannt";
 
-            // 📊 PARTICIPATION
-            ViewBag.Going = await _context.Participations.CountAsync(p => p.EventId == id && p.Status == "Going");
-            ViewBag.Maybe = await _context.Participations.CountAsync(p => p.EventId == id && p.Status == "Maybe");
-            ViewBag.No = await _context.Participations.CountAsync(p => p.EventId == id && p.Status == "No");
+            // 📊 PARTICIPATIONS
+            var participations = _context.Participations
+                .Where(p => p.EventId == id);
+
+            var going = await participations.CountAsync(p => p.Status == "Going");
+            var maybe = await participations.CountAsync(p => p.Status == "Maybe");
+            var no = await participations.CountAsync(p => p.Status == "No");
+
+            ViewBag.Going = going;
+            ViewBag.Maybe = maybe;
+            ViewBag.No = no;
+
+            // 🚨 EVENT FULL CHECK
+            ViewBag.IsFull = eventItem.MaxParticipants > 0
+                && going >= eventItem.MaxParticipants;
 
             // 💬 COMMENTS
             ViewBag.Comments = await _context.Comments

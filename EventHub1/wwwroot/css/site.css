@@ -131,3 +131,24 @@ a {
 .text-muted {
     color: #888 !important;
 }
+.btn-food {
+    background-color: #8e44ad;
+    color: white;
+    border: none;
+}
+
+    .btn-food:hover {
+        background-color: #732d91;
+        color: white;
+    }
+
+.btn-lern {
+    background: transparent;
+    border: 2px solid orange;
+    color: orange;
+}
+
+    .btn-lern:hover {
+        background: orange;
+        color: white;
+    }
